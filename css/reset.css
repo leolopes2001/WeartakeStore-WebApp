@@ -1,0 +1,26 @@
+html,
+body,
+header,
+nav,
+main,
+aside,
+section,
+div,
+p,
+ul,
+li,
+button,
+input,
+h1,
+h4 {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border: 0;
+  outline: none;
+  text-decoration: none;
+  list-style-type: none;
+  font-style: normal;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-family: "Inter", sans-serif;
+}

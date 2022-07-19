@@ -2,8 +2,8 @@
 
 const data = [
   {
-    id: 1,
-    img: "../img/jaqueta.svg",
+    id: 0,
+    img: "./img/jaqueta.svg",
     nameItem: "Lightweight Jacket",
     description:
       "Adicione um pouco de energia ao seu guarda-roupa de inverno com esta jaqueta vibrante...",
@@ -12,8 +12,8 @@ const data = [
     tag: ["Camisetas"],
   },
   {
-    id: 2,
-    img: "../img/gorro.svg",
+    id: 1,
+    img: "./img/gorro.svg",
     nameItem: "Black Hat",
     description:
       "O gorro Next.js chegou! Esta beldade bordada tem um ajuste confortável que garante que...",
@@ -22,8 +22,8 @@ const data = [
     tag: ["Acessórios"],
   },
   {
-    id: 3,
-    img: "../img/mascara.svg",
+    id: 2,
+    img: "./img/mascara.svg",
     nameItem: "Mask",
     description:
       "Esta máscara facial durável é feita de duas camadas de tecido tratado e possui presilhas...",
@@ -32,18 +32,18 @@ const data = [
     tag: ["Acessórios"],
   },
   {
-    id: 4,
-    img: "../img/camiseta_preta.svg",
+    id: 3,
+    img: "./img/camiseta_preta.svg",
     nameItem: "T-Shirt",
+    value: 200,
     description:
       "Esta t-shirt é imprescindível no seu guarda-roupa, combinando o caimento intemporal de...",
-    value: 100,
     addCart: "Adicionar ao carrinho",
     tag: ["Camisetas"],
   },
   {
-    id: 5,
-    img: "../img/camiseta_branca.svg",
+    id: 4,
+    img: "./img/camiseta_branca.svg",
     nameItem: "Short-Sleeve T-Shirt",
     description:
       "Agora você encontrou a camiseta básica do seu guarda-roupa. É feito de um mais grosso...",
@@ -52,13 +52,22 @@ const data = [
     tag: ["Camisetas"],
   },
   {
-    id: 6,
-    img: "../img/moletom.svg",
+    id: 5,
+    img: "./img/moletom.svg",
     nameItem: "Champion Packable Jacket",
     description:
       "Proteja-se dos elementos com esta jaqueta embalável Champion. Esta jaqueta de poliést...",
     value: 100,
     addCart: "Adicionar ao carrinho",
     tag: ["Camisetas"],
+  },
+  {
+    id: 6,
+    img: "https://m.media-amazon.com/images/I/71mnUl9JBrL._AC_SY200_.jpg",
+    nameItem:"Chinelo",
+    description:
+      "na parte lateral da gáspea e tudo com pontos em acabamentos refletivos ",
+    value: 89.9,
+    tag: ["Calçados"],
   },
 ];

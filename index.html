@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+
+    <script defer src="js/database.js"></script>
+    <script defer src="js/index.js"></script>
+
+    <title>Weartake</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <h1 class="header__logo">Weartake</h1>
+        <nav class="header__nav">
+          <ul class="header__list">
+            <li class="type clicked">Todos</li>
+            <li class="type">Acessórios</li>
+            <li class="type">Calçados</li>
+            <li class="type">Camisetas</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <section class="main__products">
+          <ul class="products__list"></ul>
+        </section>
+
+        <aside class="main__options">
+          <form class="options__form">
+            <input
+              type="text"
+              name=""
+              id=""
+              class="options__inputtext"
+              placeholder="Digite aqui sua pesquisa"
+            />
+            <button class="options__search">Pesquisar</button>
+          </form>
+
+          <section class="cart">
+            <h4 class="cart__title">Carinho de compras</h4>
+            <ul class="cart__list">
+              <li class="empty">
+                <h4>Carrinho vázio</h4>
+                <p>Adicione itens</p>
+              </li>
+            </ul>
+            <section class="cart__about hidden">
+              <div class="cart__quantity">
+                <p>Quantidade:</p>
+                <p>3</p>
+              </div>
+              <div class="cart__total">
+                <p>Total:</p>
+                <p>R$ 200,00</p>
+              </div>
+            </section>
+          </section>
+
+          <button id="manage__data">Gerenciar Banco de Dados</button>
+        </aside>
+      </div>
+    </main>
+
+
+    <div class="modal_container">
+      <div class="modal">
+        
+      </div>
+    </div>
+  </body>
+</html>
