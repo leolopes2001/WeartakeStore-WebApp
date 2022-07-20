@@ -21,6 +21,7 @@ const getDataBase = (database) => {
   if (database === "databasecart")
     return JSON.parse(localStorage.getItem(database)) ?? cart;
 };
+
 const postDataBase = (nameDB, database) => {
   localStorage.setItem(nameDB, JSON.stringify(database));
 };
@@ -60,7 +61,7 @@ const createAddCartBtn = () => {
 };
 
 const formatNum = (num) => {
-  const newN = num.toFixed(2);
+  const newN = Number(num).toFixed(2);
   return newN.replace(".", ",");
 };
 
@@ -111,31 +112,31 @@ const updateAbout = (cart) => {
 
 const createSelect = (quantity) => {
   const select = createElement("select");
+
   for (let i = 1; i <= 5; i++) {
     const option = createElement("option");
     option.textContent = i;
     if (quantity === i) option.setAttribute("selected", "selected");
-
     select.appendChild(option);
   }
+
   select.addEventListener("change", (e) => {
     const value = Number(e.target.value);
     const id = Number(e.composedPath()[3].id);
 
-    const newC = [];
+    const newCartUpdate = [];
     for (let i = 0; i < getDataBase("databasecart").length; i++) {
       if (getDataBase("databasecart")[i].id === id) {
-        console.log("opaaaa");
-        newC.push({
+        newCartUpdate.push({
           ...getDataBase("databasecart")[i],
+          ["quantity"]: value,
         });
-        newC[newC.length - 1]["quantity"] = value;
       } else {
-        newC.push(getDataBase("databasecart")[i]);
+        newCartUpdate.push(getDataBase("databasecart")[i]);
       }
     }
 
-    postDataBase("databasecart", newC);
+    postDataBase("databasecart", newCartUpdate);
     updateAbout(getDataBase("databasecart"));
   });
 
@@ -145,6 +146,7 @@ const createSelect = (quantity) => {
 const updateCart = (cart) => {
   const list = getElement(".cart__list");
   list.innerHTML = "";
+
   for (let i = 0; i < cart.length; i++) {
     const li = createElement("li");
     li.classList.add("cart__item");
@@ -160,7 +162,7 @@ const updateCart = (cart) => {
             </div>
             <div>
                 <h1 class="cart__name">${cart[i].nameItem}</h1>
-                <p class="cart__price">R$ ${cart[i].value}</p>
+                <p class="cart__price">R$ ${formatNum(cart[i].value)}</p>
             </div>
         `
     );
@@ -188,7 +190,6 @@ const checkExistence = (id) => {
   for (let i = 0; i < getDataBase("databasecart").length; i++) {
     if (getDataBase("databasecart")[i].id === id) return true;
   }
-  return false;
 };
 const addCart = (e) => {
   const id = Number(e.composedPath()[2].id);
@@ -197,22 +198,20 @@ const addCart = (e) => {
     alert("Esse produto já existe no carrinho!");
     return;
   }
-  console.log(checkExistence(id) + "opa1");
-  console.log(getProduct(id) + "opa2");
 
-  const obj = getProduct(id);
+  const { id: objId, img, nameItem, value } = getProduct(id);
 
-  const correctData = [...getDataBase("databasecart")];
-  correctData.push({
-    id: obj.id,
-    img: obj.img,
-    nameItem: obj.nameItem,
-    value: obj.value,
-    description: obj.description,
+  const newCartArray = getDataBase("databasecart");
+
+  newCartArray.push({
+    id: objId,
+    img,
+    nameItem,
+    value,
     quantity: 1,
   });
 
-  postDataBase("databasecart", correctData);
+  postDataBase("databasecart", newCartArray);
   updateCart(getDataBase("databasecart"));
 };
 
@@ -235,7 +234,7 @@ const show_all_products = (arr, showcase) => {
           <p class="products__about">
             ${arr[i].description}
           </p>
-          <p class="products__price">R$ ${arr[i].value}</p>
+          <p class="products__price">R$ ${formatNum(arr[i].value)}</p>
           </div>
         `
     );
@@ -257,7 +256,6 @@ const getByType = (data, type) => {
 const clearClicked = () => {
   allLiTypes.forEach((el) => el.classList.remove("clicked"));
 };
-
 const clearFields = () => {
   getElement("#nameItem").value = "";
   getElement("#description").value = "";
@@ -266,9 +264,7 @@ const clearFields = () => {
   getElement("#tag").value = "Acessórios";
 };
 
-const isValid = () => {
-  return getElement(".modal_form").reportValidity();
-};
+const isValid = () => getElement(".modal_form").reportValidity();
 
 const openModal = () => containerModal.classList.add(classShowModal);
 const closeModal = () => containerModal.classList.remove(classShowModal);
@@ -318,12 +314,13 @@ addBTN.addEventListener("click", () => {
       description: getElement("#description").value,
       img: getElement("#img").value,
       value: getElement("#value").value,
-      tag: getElement("#tag").value,
+      tag: [getElement("#tag").value],
       id: data.length + 1,
     });
 
     postDataBase("database", data);
 
+    console.log(getDataBase("database"));
     clearFields();
     closeModal();
     show_all_products(getDataBase("database"), listOfProducts);

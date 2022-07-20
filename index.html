@@ -36,9 +36,7 @@
     <main class="main">
       <div class="container">
         <section class="main__products">
-          <ul class="products__list">
-            
-          </ul>
+          <ul class="products__list"></ul>
         </section>
 
         <aside class="main__options">
@@ -73,7 +71,7 @@
             </section>
           </section>
 
-          <button id="manage__data">Gerenciar Banco de Dados</button>
+          <button id="manage__data">Adicionar Novo Produto</button>
         </aside>
       </div>
     </main>
@@ -83,7 +81,13 @@
         <h4 class="modal_title">Adicione um novo produto!</h4>
         <form class="modal_form">
           <label for="nameItem">Nome do produto:</label>
-          <input type="text" name="nameItem" id="nameItem" required />
+          <input
+            type="text"
+            name="nameItem"
+            id="nameItem"
+            placeholder="Digite aqui o nome do produto..."
+            required
+          />
 
           <label for="description">Descrição do producto:</label>
           <textarea
@@ -91,14 +95,15 @@
             id="description"
             cols="30"
             rows="4"
+            placeholder="Digite aqui a descrição do produto..."
             required
           ></textarea>
 
           <label for="img">URL da imagem:</label>
-          <input type="url" name="img" id="img" required />
+          <input type="url" name="img" id="img" placeholder="Digite aqui a SRC da imagem..." required />
 
           <label for="value">Valor do produto:</label>
-          <input type="number" min="1" name="value" id="value" required />
+          <input type="number" min="1" name="value" id="value" placeholder="Digite aqui o valor do produto..." required />
 
           <label for="tag">Tipo do produto:</label>
           <select name="tag" id="tag" required>
