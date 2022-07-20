@@ -36,7 +36,9 @@
     <main class="main">
       <div class="container">
         <section class="main__products">
-          <ul class="products__list"></ul>
+          <ul class="products__list">
+            
+          </ul>
         </section>
 
         <aside class="main__options">
@@ -76,10 +78,39 @@
       </div>
     </main>
 
-
     <div class="modal_container">
       <div class="modal">
-        
+        <h4 class="modal_title">Adicione um novo produto!</h4>
+        <form class="modal_form">
+          <label for="nameItem">Nome do produto:</label>
+          <input type="text" name="nameItem" id="nameItem" required />
+
+          <label for="description">Descrição do producto:</label>
+          <textarea
+            name="description"
+            id="description"
+            cols="30"
+            rows="4"
+            required
+          ></textarea>
+
+          <label for="img">URL da imagem:</label>
+          <input type="url" name="img" id="img" required />
+
+          <label for="value">Valor do produto:</label>
+          <input type="number" min="1" name="value" id="value" required />
+
+          <label for="tag">Tipo do produto:</label>
+          <select name="tag" id="tag" required>
+            <option selected>Acessórios</option>
+            <option>Calçados</option>
+            <option>Camisetas</option>
+          </select>
+          <div>
+            <button class="exitBTN">Cancelar</button>
+            <button class="addBTN">Adicionar</button>
+          </div>
+        </form>
       </div>
     </div>
   </body>

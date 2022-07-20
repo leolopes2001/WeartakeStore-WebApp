@@ -1,8 +1,22 @@
+let cart = [];
+
+
+
+
+
+
 const getElement = (...queries) => document.querySelector(...queries);
 const createElement = (...queries) => document.createElement(...queries);
 const getAllElements = (...queries) => document.querySelectorAll(...queries);
 const listOfProducts = getElement(".products__list");
-let cart = [];
+
+const getDataBase = () => {
+  return JSON.parse(localStorage.getItem("database")) ?? data;
+};
+const postDataBase = (database) => {
+  localStorage.setItem("database", JSON.stringify(database));
+};
+
 
 const createRemoveBtn = () => {
   const btn = createElement("button");
@@ -36,33 +50,20 @@ const createAddCartBtn = () => {
   button.addEventListener("click", addCart);
   return button;
 };
-const transformIntoArr = (string) => {
-  let arr = [];
-  for (let i = 0; i < string.length; i++) {
-    arr.push(string[i]);
-  }
-  return arr;
-};
-const replaceDot = (arr) => {
-  let string = "";
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] === "." ? (string += ",") : (string += arr[i] + "");
-  }
-  return string;
-};
+
 const formatNum = (num) => {
   const newN = num.toFixed(2);
-  const arr = transformIntoArr(newN);
-  return replaceDot(arr);
+  return newN.replace(".", ",");
 };
 
 const getQuantityAndTotal = () => {
   let total = 0;
   let quantity = 0;
-  for (let i = 0; i < cart.length; i++) {
-    quantity += cart[i].quantity;
-    total += cart[i].value * cart[i].quantity;
-  }
+  cart.forEach((product) => {
+    quantity += product.quantity;
+    total += product.value * product.quantity;
+  });
+
   const totalFormat = formatNum(total);
   return { quantity, totalFormat };
 };
@@ -238,20 +239,17 @@ buttonsearch.addEventListener("click", (e) => {
   e.preventDefault();
   const text = inputText.value.toLowerCase().trim();
 
-  let arrFilter = [];
-  for (let i = 0; i < data.length; i++) {
-    const name = data[i].nameItem.toLowerCase().trim();
-    if (name.includes(text)) arrFilter.push(data[i]);
-  }
+  let arrFilter = data.filter((product) => {
+    const name = product.nameItem.toLowerCase().trim();
+    if (name.includes(text)) return true;
+  });
 
-  show_all_products(arrFilter,listOfProducts)
+  show_all_products(arrFilter, listOfProducts);
 });
 
 const allLiTypes = getAllElements(".type");
 const clearClicked = () => {
-  for (let i = 0; i < allLiTypes.length; i++) {
-    allLiTypes[i].classList.remove("clicked");
-  }
+  allLiTypes.forEach((el) => el.classList.remove("clicked"));
 };
 
 for (let i = 0; i < allLiTypes.length; i++) {
@@ -268,9 +266,54 @@ for (let i = 0; i < allLiTypes.length; i++) {
   });
 }
 
+const button = getElement("#manage__data");
+const containerModal = getElement(".modal_container");
+const modal = getElement(".modal");
 
-const button = getElement("#manage__data")
+const classShowModal = "show_modal_container";
+const openModal = () => containerModal.classList.add(classShowModal);
+const closeModal = () => containerModal.classList.remove(classShowModal);
 
+button.addEventListener("click", openModal);
 
+containerModal.addEventListener("click", (e) => {
+  if (e.target.classList.contains("show_modal_container")) closeModal();
+});
+const exitBTN = getElement(".exitBTN");
+const addBTN = getElement(".addBTN");
+exitBTN.addEventListener("click", (e) => {
+  e.preventDefault();
+  clearFields();
+  closeModal();
+});
+const clearFields = () => {
+  getElement("#nameItem").value = "";
+  getElement("#description").value = "";
+  getElement("#img").value = "";
+  getElement("#value").value = "";
+  getElement("#tag").value = "Acessórios";
+};
+const isValid = () => {
+  return getElement(".modal_form").reportValidity();
+};
+
+addBTN.addEventListener("click", () => {
+  if (isValid()) {
+    data.push({
+      nameItem: getElement("#nameItem").value,
+      description: getElement("#description").value,
+      img: getElement("#img").value,
+      value: getElement("#value").value,
+      tag: getElement("#tag").value,
+      id: data.length + 1,
+    });
+
+    clearFields();
+    closeModal();
+    show_all_products(data, listOfProducts);
+  }
+});
+
+const addNewProduct = () => {};
 
 show_all_products(data, listOfProducts);
