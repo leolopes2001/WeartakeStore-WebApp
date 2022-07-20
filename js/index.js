@@ -1,22 +1,29 @@
-let cart = [];
-
-
-
-
-
-
 const getElement = (...queries) => document.querySelector(...queries);
 const createElement = (...queries) => document.createElement(...queries);
 const getAllElements = (...queries) => document.querySelectorAll(...queries);
+
+let cart = [];
+
+const inputText = getElement(".options__inputtext");
+const buttonsearch = getElement(".options__search");
+const allLiTypes = getAllElements(".type");
+const exitBTN = getElement(".exitBTN");
+const addBTN = getElement(".addBTN");
 const listOfProducts = getElement(".products__list");
+const button = getElement("#manage__data");
+const containerModal = getElement(".modal_container");
+const modal = getElement(".modal");
+const classShowModal = "show_modal_container";
 
-const getDataBase = () => {
-  return JSON.parse(localStorage.getItem("database")) ?? data;
+const getDataBase = (database) => {
+  if (database === "database")
+    return JSON.parse(localStorage.getItem(database)) ?? data;
+  if (database === "databasecart")
+    return JSON.parse(localStorage.getItem(database)) ?? cart;
 };
-const postDataBase = (database) => {
-  localStorage.setItem("database", JSON.stringify(database));
+const postDataBase = (nameDB, database) => {
+  localStorage.setItem(nameDB, JSON.stringify(database));
 };
-
 
 const createRemoveBtn = () => {
   const btn = createElement("button");
@@ -25,14 +32,15 @@ const createRemoveBtn = () => {
   btn.addEventListener("click", (e) => {
     const id = Number(e.composedPath()[3].id);
     let newCart = [];
-    for (let i = 0; i < cart.length; i++) {
-      if (cart[i].id !== id) {
-        newCart.push(cart[i]);
+    for (let i = 0; i < getDataBase("databasecart").length; i++) {
+      if (getDataBase("databasecart")[i].id !== id) {
+        newCart.push(getDataBase("databasecart")[i]);
       }
     }
 
-    cart = [...newCart];
-    updateCart();
+    postDataBase("databasecart", newCart);
+
+    updateCart(getDataBase("databasecart"));
   });
   return btn;
 };
@@ -59,7 +67,7 @@ const formatNum = (num) => {
 const getQuantityAndTotal = () => {
   let total = 0;
   let quantity = 0;
-  cart.forEach((product) => {
+  getDataBase("databasecart").forEach((product) => {
     quantity += product.quantity;
     total += product.value * product.quantity;
   });
@@ -81,7 +89,7 @@ const createLi = () => {
   return li;
 };
 
-const updateAbout = () => {
+const updateAbout = (cart) => {
   const cartAbout = getElement(".cart__about");
   if (cart.length > 0) {
     cartAbout.classList.remove("hidden");
@@ -101,11 +109,6 @@ const updateAbout = () => {
   cart__total.children[1].insertAdjacentHTML("afterbegin", `R$ ${totalFormat}`);
 };
 
-const getObj = (id) => {
-  for (let i = 0; i < cart.length; i++) {
-    if (id === cart[i].id) return i;
-  }
-};
 const createSelect = (quantity) => {
   const select = createElement("select");
   for (let i = 1; i <= 5; i++) {
@@ -118,15 +121,28 @@ const createSelect = (quantity) => {
   select.addEventListener("change", (e) => {
     const value = Number(e.target.value);
     const id = Number(e.composedPath()[3].id);
-    const objId = getObj(id);
-    cart[objId].quantity = value;
-    updateAbout();
+
+    const newC = [];
+    for (let i = 0; i < getDataBase("databasecart").length; i++) {
+      if (getDataBase("databasecart")[i].id === id) {
+        console.log("opaaaa");
+        newC.push({
+          ...getDataBase("databasecart")[i],
+        });
+        newC[newC.length - 1]["quantity"] = value;
+      } else {
+        newC.push(getDataBase("databasecart")[i]);
+      }
+    }
+
+    postDataBase("databasecart", newC);
+    updateAbout(getDataBase("databasecart"));
   });
 
   return select;
 };
 
-const updateCart = () => {
+const updateCart = (cart) => {
   const list = getElement(".cart__list");
   list.innerHTML = "";
   for (let i = 0; i < cart.length; i++) {
@@ -159,19 +175,20 @@ const updateCart = () => {
     list.appendChild(li);
   }
 
-  updateAbout();
+  updateAbout(getDataBase("databasecart"));
 };
 
 const getProduct = (id) => {
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].id === id) return data[i];
+  for (let i = 0; i < getDataBase("database").length; i++) {
+    if (getDataBase("database")[i].id === id) return getDataBase("database")[i];
   }
 };
 
 const checkExistence = (id) => {
-  for (let i = 0; i < cart.length; i++) {
-    if (cart[i].id === id) return true;
+  for (let i = 0; i < getDataBase("databasecart").length; i++) {
+    if (getDataBase("databasecart")[i].id === id) return true;
   }
+  return false;
 };
 const addCart = (e) => {
   const id = Number(e.composedPath()[2].id);
@@ -180,10 +197,13 @@ const addCart = (e) => {
     alert("Esse produto já existe no carrinho!");
     return;
   }
+  console.log(checkExistence(id) + "opa1");
+  console.log(getProduct(id) + "opa2");
 
   const obj = getProduct(id);
 
-  cart.push({
+  const correctData = [...getDataBase("databasecart")];
+  correctData.push({
     id: obj.id,
     img: obj.img,
     nameItem: obj.nameItem,
@@ -192,7 +212,8 @@ const addCart = (e) => {
     quantity: 1,
   });
 
-  updateCart(cart);
+  postDataBase("databasecart", correctData);
+  updateCart(getDataBase("databasecart"));
 };
 
 const show_all_products = (arr, showcase) => {
@@ -232,25 +253,25 @@ const getByType = (data, type) => {
   }
   return arr;
 };
-const inputText = getElement(".options__inputtext");
-const buttonsearch = getElement(".options__search");
 
-buttonsearch.addEventListener("click", (e) => {
-  e.preventDefault();
-  const text = inputText.value.toLowerCase().trim();
-
-  let arrFilter = data.filter((product) => {
-    const name = product.nameItem.toLowerCase().trim();
-    if (name.includes(text)) return true;
-  });
-
-  show_all_products(arrFilter, listOfProducts);
-});
-
-const allLiTypes = getAllElements(".type");
 const clearClicked = () => {
   allLiTypes.forEach((el) => el.classList.remove("clicked"));
 };
+
+const clearFields = () => {
+  getElement("#nameItem").value = "";
+  getElement("#description").value = "";
+  getElement("#img").value = "";
+  getElement("#value").value = "";
+  getElement("#tag").value = "Acessórios";
+};
+
+const isValid = () => {
+  return getElement(".modal_form").reportValidity();
+};
+
+const openModal = () => containerModal.classList.add(classShowModal);
+const closeModal = () => containerModal.classList.remove(classShowModal);
 
 for (let i = 0; i < allLiTypes.length; i++) {
   allLiTypes[i].addEventListener("click", (e) => {
@@ -266,36 +287,29 @@ for (let i = 0; i < allLiTypes.length; i++) {
   });
 }
 
-const button = getElement("#manage__data");
-const containerModal = getElement(".modal_container");
-const modal = getElement(".modal");
-
-const classShowModal = "show_modal_container";
-const openModal = () => containerModal.classList.add(classShowModal);
-const closeModal = () => containerModal.classList.remove(classShowModal);
-
 button.addEventListener("click", openModal);
 
-containerModal.addEventListener("click", (e) => {
-  if (e.target.classList.contains("show_modal_container")) closeModal();
-});
-const exitBTN = getElement(".exitBTN");
-const addBTN = getElement(".addBTN");
 exitBTN.addEventListener("click", (e) => {
   e.preventDefault();
   clearFields();
   closeModal();
 });
-const clearFields = () => {
-  getElement("#nameItem").value = "";
-  getElement("#description").value = "";
-  getElement("#img").value = "";
-  getElement("#value").value = "";
-  getElement("#tag").value = "Acessórios";
-};
-const isValid = () => {
-  return getElement(".modal_form").reportValidity();
-};
+
+buttonsearch.addEventListener("click", (e) => {
+  e.preventDefault();
+  const text = inputText.value.toLowerCase().trim();
+
+  let arrFilter = data.filter((product) => {
+    const name = product.nameItem.toLowerCase().trim();
+    if (name.includes(text)) return true;
+  });
+
+  show_all_products(arrFilter, listOfProducts);
+});
+
+containerModal.addEventListener("click", (e) => {
+  if (e.target.classList.contains("show_modal_container")) closeModal();
+});
 
 addBTN.addEventListener("click", () => {
   if (isValid()) {
@@ -308,12 +322,13 @@ addBTN.addEventListener("click", () => {
       id: data.length + 1,
     });
 
+    postDataBase("database", data);
+
     clearFields();
     closeModal();
-    show_all_products(data, listOfProducts);
+    show_all_products(getDataBase("database"), listOfProducts);
   }
 });
 
-const addNewProduct = () => {};
-
-show_all_products(data, listOfProducts);
+updateCart(getDataBase("databasecart"));
+show_all_products(getDataBase("database"), listOfProducts);
