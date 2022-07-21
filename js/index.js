@@ -157,7 +157,7 @@ const updateCart = (cart) => {
             <div>
                 <img 
                     src=${cart[i].img} 
-                    alt=${cart[i].description}
+                    alt=${cart[i].nameItem}
                     class="cart__img" />
             </div>
             <div>
